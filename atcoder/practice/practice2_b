@@ -1,0 +1,69 @@
+#include <iostream>
+#include <vector>
+#include<bits/stdc++.h>
+#include <cmath>
+#include<algorithm>
+
+using namespace std;
+
+long long int num[500001];
+
+struct FT {
+    int n;
+    
+    FT(int _n) {
+        n = _n;
+        for (int i=0; i<n; i++) num[i] = 0LL;
+    };
+    
+    // add single value
+    void add(int p, int x) {
+        int idx = p + 1; 
+        while (idx <= n) {
+            num[idx] += x;
+            idx += (idx & (-idx));
+        }
+    }
+    
+    // get sum in range 0-p
+    long long int getSum(int p) {
+        int idx = p + 1;
+        long long int ans = 0LL;
+        while (idx > 0) {
+            ans += num[idx];
+            idx -= (idx & (-idx));
+        }
+        return ans;
+    }
+};
+
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+
+    int n, q;
+    cin >> n >> q;
+    vector<int> a(n);
+    FT ft(n);
+    for (int i=0; i<n; i++) {
+        cin >> a[i];
+        ft.add(i, a[i]);
+    }
+
+    int cmd, p, x, l , r;
+    
+    
+    while (q--) {
+        cin >> cmd;
+        if (cmd == 0) {
+            cin >> p >> x;
+            ft.add(p, x);
+        } else {
+            cin >> l >> r;
+            cout << (ft.getSum(r-1) - ft.getSum(l-1)) << "\n";
+        }
+    }
+    
+	return 0;
+}
