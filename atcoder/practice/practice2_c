@@ -1,0 +1,32 @@
+// https://atcoder.jp/contests/practice2/tasks/practice2_c
+
+#include <iostream>
+#include <vector>
+#include<bits/stdc++.h>
+#include <cmath>
+#include<algorithm>
+
+using namespace std;
+
+// read: https://asfjwd.github.io/2020-04-24-floor-sum-ap/
+long long FloorSumAP(long long a, long long b, long long c, long long n){
+  if(!a) return (b / c) * (n + 1);
+  if(a >= c or b >= c) return ( ( n * (n + 1) ) / 2) * (a / c) + (n + 1) * (b / c) + FloorSumAP(a % c, b % c, c, n);
+  long long m = (a * n + b) / c;
+  return m * n - FloorSumAP(c, c - b - 1, a, m - 1);
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+	int t; cin >> t;
+	
+	while (t--) {
+	    long long n, m, a, b;
+        cin >> n >> m >> a >> b;
+        cout << FloorSumAP(a, b, m, n-1) << '\n';
+	}
+    return 0;
+}
