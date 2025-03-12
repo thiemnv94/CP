@@ -1,3 +1,5 @@
+// https://atcoder.jp/contests/practice2/tasks/practice2_b
+
 #include <iostream>
 #include <vector>
 #include<bits/stdc++.h>
