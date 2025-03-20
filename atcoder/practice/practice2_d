@@ -1,0 +1,94 @@
+// https://atcoder.jp/contests/practice2/tasks/practice2_d
+
+#include <iostream>
+#include <vector>
+#include<bits/stdc++.h>
+#include <cmath>
+#include<algorithm>
+
+using namespace std;
+
+bool aug(vector<vector<int>> &p, vector<int> &match, vector<bool> &used, int i) {
+    if (used[i]) return false;
+    used[i] = true;
+    
+    for (int j=0;j<4;j++) {
+        if (p[i][j] == -1) break;
+        
+        if (match[p[i][j]] == -1 || aug(p, match, used, match[p[i][j]])) {
+            match[i] = p[i][j];
+            match[p[i][j]] = i;
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	
+    int n, m;
+    cin >> n >> m;
+    int limit = n*m;
+    vector<int> match(limit, -1);
+    vector<bool> used(limit, false);
+    
+    vector<string> s(n);
+    for (int i=0;i<n;i++) cin >> s[i];
+    
+    vector<vector<int>> p(limit, vector<int>(4, -1));
+    
+    int k = -1, idx;
+    for (int i=0;i<n;i++) {
+        for (int j=0;j<m;j++) {
+            k++;
+            if (s[i][j]!='#') {
+                idx = 0;
+                // right
+                if (j<m-1 && s[i][j+1] !='#') p[k][idx++] = k+1;
+                // left
+                if (j>0 && s[i][j-1] != '#') p[k][idx++] = k-1;
+                // up
+                if (i>0 && s[i-1][j] != '#') p[k][idx++] = k-m;
+                // down
+                if (i<n-1 && s[i+1][j] != '#') p[k][idx] = k+m;
+            }
+        }
+    }
+    
+    int x, y;
+    for (int i=0;i<limit;i++) {
+        x = i/m; y = i%m;
+        if (s[x][y] == '#' || match[i] != -1) continue;
+        fill(used.begin(), used.end(), false);
+        aug(p, match, used, i);
+    }
+    
+    int res = 0;
+    for (int i=0;i<limit;i++) {
+        if (match[i] == -1) continue;
+        x = i/m; y = i%m;
+        // match right
+        if (match[i] == i+1 && y < m - 1) {
+            res++;
+            s[x][y] = '>';
+            s[x][y+1] = '<';
+        } 
+        // match up
+        else if (match[i] == i-m && x > 0) {
+            res++;
+            s[x][y] = '^';
+            s[x-1][y] = 'v';
+        }
+    }
+    
+    cout << res << "\n";
+    for (int i=0;i<n;i++) {
+        cout << s[i] << "\n";
+    }
+    
+    return 0;
+}
